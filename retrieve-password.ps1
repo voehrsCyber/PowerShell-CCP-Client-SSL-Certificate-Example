@@ -1,5 +1,12 @@
 echo "init call (WSDL and Certificate already prepared)"
-$certificate = Get-ChildItem Cert:\LocalMachine\My\C1D488C836A3E84324129E818A93DC556AFACD02
+$CertName = Read-Host -Prompt 'Please enter CN of the client certficate'
+Set-Location cert:
+cd "\CurrentUser\My";
+$CertThumbprint='';
+Get-ChildItem -Recurse | foreach{If($_.Subject -eq $CertName){$CertThumbprint = $_.Thumbprint;$certificate = $_}}
+if ($CertThumbprint -eq ''){
+    throw "No Certificate found";
+}
 $temp_wsdl = "C:\temp\aimwebservice.xml"
 $fileTempWsdl = "file://C:/temp/aimwebservice.xml"
 $WebRequest = @{
